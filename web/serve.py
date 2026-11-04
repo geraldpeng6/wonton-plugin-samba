@@ -124,7 +124,7 @@ def rows():
 
     acct = ""
     if not owner:
-        acct += '<div class="err">核心没有注入主人用户名（WONTON_OWNER_NAME 为空）。</div>'
+        acct += '<div class="err">核心没有注入用户名（WONTON_OWNER_NAME 为空）。</div>'
     else:
         acct += (f'<div class="row"><span class="name">用户名</span><span class="col">'
                  f'<span class="mono">{html.escape(owner)}</span>'
