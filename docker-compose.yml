@@ -131,41 +131,29 @@ configs:
 x-wonton:
   spec: "0.4"
   id: org.samba.samba
-  version: 0.1.0
+  version: 0.1.1
   kind: app
-  title: { zh: Samba 文件共享, en: Samba File Sharing }
-  description: { zh: 局域网里的电脑直接挂载家里的共享文件夹, en: Mount your shared folders from computers on the LAN }
+  title: { en: Samba }
+  description: { zh: 让局域网里的电脑直接打开家里的共享文件夹, en: Open your shared folders from any computer on your network }
   icon: icon.png
   notices: [NOTICE]
-  category: files
   screenshots: [screenshots/web.png, screenshots/web-dark.png]
   author: { name: geraldpeng6 }
   homepage: https://www.samba.org
   license: GPL-3.0-or-later
-  tags: [samba, smb, nas, 文件共享, 局域网, file-share, lan]
+  tags:
+    zh: [文件, 网络]
+    en: [Files, Network]
   about:
     zh: |
-      把家里的共享文件夹（照片、文档、音乐、下载、传输）导出成 SMB 共享，局域网里的电脑直接挂载：macOS 在
-      Finder 的“连接服务器”里输 smb://地址/共享名，Windows 在资源管理器输 \\地址\共享名，Linux 文件管理器
-      连 smb://地址。读写照片、文档、音乐和设备传进来的文件，新建的文件都归主人的用户。
+      让局域网里的电脑直接打开家里的共享文件夹：macOS 在 Finder 的“连接服务器”里输 smb://地址，Windows 在资源管理器输 \\地址。
 
-      只在局域网开放 445 端口，不开发现服务，也不通互联网；最低 SMB3 协议，开签名，能协商加密就加密。
-      插件网页显示连接地址、用户名和密码，可以点按复制。
-
-      SMB 的账号密码和网关的单点登录是分开的：网页里给的密码就是电脑连接时用的密码。
+      插件网页给出地址、用户名和密码，点一下就能复制。只在局域网开放，不通互联网。
     en: |
-      Exports your shared folders (photos, documents, music, downloads, transfers) as SMB shares that
-      computers on the LAN mount directly: use smb://address/share in macOS Finder, \\address\share in
-      Windows Explorer, or smb://address in Linux file managers. Read and write photos, documents,
-      music and files sent from devices; new files are owned by the owner's account.
+      Open your shared folders from a computer on your network: use smb://address in macOS Finder's Connect to Server, or \\address in Windows Explorer.
 
-      Only port 445 is open on the LAN, no discovery services, nothing reaches the internet. Minimum
-      protocol SMB3, signing required, encryption negotiated when the client supports it. The plugin
-      page shows the addresses, username and password, each tap-to-copy.
-
-      The SMB account is separate from the gateway's single sign-on: the password shown on the page is
-      the one computers use to connect.
-  release_notes: { zh: 第一版。, en: First release. }
+      The plugin page shows the address, user name and password, each with one-tap copy. It only opens on your network, never to the internet.
+  release_notes: { zh: 名字和说明更新。, en: Product name and description update. }
   webui:
     service: web
     port: 8080
@@ -187,3 +175,7 @@ x-wonton:
     - storage.share.downloads:write
     - storage.share.transfers:write
     - owner.identity
+  # 上游没写最低内存；本机空闲实测约 24M，取 64M。镜像支持 amd64 和 arm64（docker manifest inspect）。
+  requirements:
+    arch: [amd64, arm64]
+    memory: 64M
