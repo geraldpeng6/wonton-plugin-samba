@@ -1,13 +1,20 @@
 # 连接信息页：stdlib http.server，无框架。
 # 地址取注入的 WONTON_LAN_ADDRESSES；密码读核心写进容器的 /run/wonton/samba-pass。
+# 页面上有 SMB 密码，而插件网络不是信任边界（别的出网插件经用户代理也能连到这个端口），
+# 所以只认网关代登录带来的 X-Wonton-Web-Key：没有这个头或值不对就 403，/healthz 除外。
 # 取不到值时如实显示原因，不假装正常。
+import hmac
 import html
 import os
+import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = 8080
 SHARES = ["photos", "documents", "music", "downloads", "transfers"]
 PASS_PATH = "/run/wonton/samba-pass"
+KEY_ENV = "WONTON_WEB_KEY"
+KEY_HEADER = "X-Wonton-Web-Key"
+WEB_KEY = os.environ.get(KEY_ENV, "")
 
 PAGE = """<!doctype html>
 <html lang="zh">
@@ -144,6 +151,15 @@ class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def do_GET(self):
+        if self.path == "/healthz":
+            self.send_response(204)
+            self.end_headers()
+            return
+        # 头名不区分大小写；比较用 compare_digest，不靠异常路径。
+        supplied = self.headers.get(KEY_HEADER, "")
+        if not WEB_KEY or not hmac.compare_digest(supplied, WEB_KEY):
+            self.send_error(403)
+            return
         if self.path in ("/", ""):
             body = PAGE.replace("@BODY@", rows()).encode()
             self.send_response(200)
@@ -152,9 +168,6 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)
-        elif self.path == "/healthz":
-            self.send_response(204)
-            self.end_headers()
         else:
             self.send_error(404)
 
@@ -163,6 +176,10 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    # 没有密钥就没有能核对的凭据，起来也只会放错人：拒绝启动。
+    if not WEB_KEY:
+        print(f"环境变量 {KEY_ENV} 为空：网页密钥没有注入，拒绝启动", file=sys.stderr)
+        raise SystemExit(1)
     server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
     server.daemon_threads = True
     server.serve_forever()

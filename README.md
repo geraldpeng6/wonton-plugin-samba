@@ -150,9 +150,11 @@ docker buildx imagetools inspect nginx:1.30.6-alpine
   `email`、`groups`（用户是 `["owner"]`）、`offline_access`。
 - `proxy`：应用不支持 OIDC，但认反向代理传来的用户名（Navidrome、Paperless-ngx、Grafana 的 auth proxy）或一个固定的
   密钥时用。网关认出用户后，在转发给插件的请求上加上 `proxy.headers` 或 `proxy.cookies`，值里可以用 `{user}`、`{name}`、
-  `{email}` 和 `{secret:<名字>}`（插件密钥里由核心生成、至少 16 字节的一项，见第 8 步）；Cookie 的值只能用
-  `{secret:…}` 和固定文字。网关先删掉客户端发来的同名请求头和 Cookie，客户端伪造不了；插件网络里只有核心和插件自己的
-  服务，所以应用“信任的代理地址”可以放宽到整个网络。示例就是这样拿到用户名的。
+  `{email}` 和 `{secret:<名字>}`（插件密钥里由核心生成、至少 16 字节的一项，见第 8 步），其余文字原样保留；Cookie 的
+  值只能用 `{secret:…}` 和固定文字。网关先删掉客户端发来的同名请求头和 Cookie，再注入
+  凭据。用请求头认人的应用只信任 `${WONTON_CORE_ADDRESS}/32`，不能信任整个网段：出网插件经代理也能连到这个网络里。
+  请求头和 Cookie 限制、可信代理条件见规范的
+  [网关代登录](https://github.com/geraldpeng6/wonton-docs/blob/main/plugin-spec.md#网关代登录sso-proxy)。
 - `none`（默认）：网关只校验登录，应用保留自己的登录，或者本来就不需要登录。
 
 ### 4. 数据

@@ -39,6 +39,8 @@ services:
     environment:
       WONTON_LAN_ADDRESSES: ${WONTON_LAN_ADDRESSES}
       WONTON_OWNER_NAME: ${WONTON_OWNER_NAME}
+      # 网关代登录的密钥（清单 webui.proxy.headers 引用的 web_key），serve.py 启动时核对它。
+      WONTON_WEB_KEY: ${WONTON_SECRET_WEB_KEY}
     configs:
       - source: serve-py
         target: /app/serve.py
@@ -157,12 +159,18 @@ x-wonton:
   webui:
     service: web
     port: 8080
+    # 连接信息页上有 SMB 密码，而插件网络不是信任边界：别的出网插件经用户代理也能连到这个端口。
+    # 网关代登录声明 X-Wonton-Web-Key（值是核心生成的密钥），serve.py 收到的请求没有这个头或值
+    # 不对就 403（/healthz 除外）。页面显示的用户名来自核心注入的 WONTON_OWNER_NAME，不认
+    # Remote-User 这类客户端可带的身份头。
     sso: proxy
     proxy:
       headers:
-        Remote-User: "{user}"
+        X-Wonton-Web-Key: "{secret:web_key}"
   secrets:
     samba_password:
+      generate: { bytes: 32 }
+    web_key:
       generate: { bytes: 32 }
   lan:
     ports:
