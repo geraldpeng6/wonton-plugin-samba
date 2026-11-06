@@ -133,7 +133,7 @@ configs:
 x-wonton:
   spec: "0.4"
   id: org.samba.samba
-  version: 0.1.1
+  version: 0.1.2
   kind: app
   title: { en: Samba }
   description: { zh: 让局域网里的电脑直接打开家里的共享文件夹, en: Open your shared folders from any computer on your network }
@@ -155,7 +155,7 @@ x-wonton:
       Open your shared folders from a computer on your network: use smb://address in macOS Finder's Connect to Server, or \\address in Windows Explorer.
 
       The plugin page shows the address, user name and password, each with one-tap copy. It only opens on your network, never to the internet.
-  release_notes: { zh: 名字和说明更新。, en: Product name and description update. }
+  release_notes: { zh: "连接信息页只接受经云吞网关打开的请求，别的插件连不进来读密码。", en: "The connection page only accepts requests opened through the Wonton gateway, so other plugins can no longer connect and read the password." }
   webui:
     service: web
     port: 8080
