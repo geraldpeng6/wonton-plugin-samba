@@ -1,6 +1,5 @@
+# shellcheck shell=bash
 # Samba：sso=proxy（X-Wonton-Web-Key 密钥头；网页不认 Remote-User，用户名来自注入的 WONTON_OWNER_NAME）；SMB 账号按用户名建。清单没有 mcp。
-SSO=proxy
-MCP=0
 
 web_assert() { grep -qi 'smb'; }   # 标准输入：连接信息页
 
