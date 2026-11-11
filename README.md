@@ -1,6 +1,6 @@
 # 云吞插件：Samba
 
-开发流程见[插件开发指南](https://github.com/geraldpeng6/wonton-docs/blob/main/develop.md)。
+开发流程见[插件开发指南](https://github.com/wontonapp/wonton-docs/blob/main/develop.md)。
 
 这个插件把用户的共享文件夹导出成 SMB 共享：局域网里的电脑（macOS 的 Finder、Windows 的资源管理器、Linux 的文件管理器）
 直接挂载 `photos`、`documents`、`music`、`downloads`、`transfers`，读写照片、文档、音乐和设备传进来的文件。插件网页显示
