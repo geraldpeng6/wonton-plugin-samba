@@ -135,8 +135,8 @@ x-wonton:
   id: org.samba.samba
   version: 0.1.3
   kind: app
-  title: { en: Samba }
-  description: { zh: 让局域网里的电脑直接打开家里的共享文件夹, en: Open your shared folders from any computer on your network }
+  title: { zh: 电脑共享盘（Samba）, en: Network Drive (Samba) }
+  description: { zh: 让家里的电脑像打开 U 盘一样打开共享文件夹：在 Windows 资源管理器、Mac 访达里直接用，不用装软件。只在家里的网络能用，出门连不上。, en: "Open the shared folders from your computer's own file manager, like a USB drive: works in Windows File Explorer and Mac Finder with nothing to install. Only works on your home network." }
   icon: icon.png
   notices: [NOTICE]
   screenshots: [screenshots/web.png, screenshots/web-dark.png]
